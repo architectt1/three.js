@@ -20054,13 +20054,20 @@
 
 		//
 
-
+		var textureMap = {};
 
 		function setTexture2D( texture, slot ) {
 
 			var textureProperties = properties.get( texture );
 
 			if ( texture.isVideoTexture ) updateVideoTexture( texture );
+
+			if ( texture.image && texture.image.src && textureMap[ texture.image.src ] ) {
+
+				textureProperties.__version = texture.version;
+				textureProperties.__webglTexture = textureMap[ texture.image.src ];
+
+			}
 
 			if ( texture.version > 0 && textureProperties.__version !== texture.version ) {
 
@@ -20077,6 +20084,13 @@
 				} else {
 
 					uploadTexture( textureProperties, texture, slot );
+
+					if ( texture.image.src ) {
+
+						textureMap[ texture.image.src ] = textureProperties.__webglTexture;
+
+					}
+
 					return;
 
 				}
